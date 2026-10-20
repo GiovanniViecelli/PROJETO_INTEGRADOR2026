@@ -1,0 +1,236 @@
+/* Estilo geral da página. */
+body {
+    /* Define a fonte usada no site. */
+    font-family: Arial, sans-serif;
+    /* Remove a margem padrão do navegador. */
+    margin: 0;
+    /* Remove o espaçamento interno padrão. */
+    padding: 0;
+    /* Define a cor de fundo. */
+    background-color: #c0bcbb;
+}
+
+/* Estilo do cabeçalho. */
+header {
+    /* Cor de fundo do cabeçalho. */
+    background-color: #d84315;
+    /* Cor dos textos. */
+    color: white;
+    /* Espaçamento interno. */
+    padding: 16px 24px;
+}
+
+.titulo-lanche {
+    text-align: center;
+}
+
+/* Ajusta o título dentro do cabeçalho. */
+header h1 {
+    /* Remove a margem padrão e deixa 8px embaixo. */
+    margin: 0 0 8px 0;
+}
+
+/* Estilo dos links do menu. */
+header nav a {
+    /* Deixa o link branco. */
+    color: white;
+    /* Espaço entre os links. */
+    margin-right: 8px;
+}
+
+/* Área principal do conteúdo. */
+main {
+    /* Espaço interno. */
+    padding: 24px;
+    /* Limita a largura. */
+    max-width: 900px;
+    /* Centraliza a área. */
+    margin: 0 auto;
+}
+
+/* Estilo das tabelas. */
+table {
+    /* Ocupa toda a largura disponível. */
+    width: 100%;
+    /* Junta as bordas das células. */
+    border-collapse: collapse;
+    /* Fundo branco. */
+    background: white;
+}
+
+/* Espaçamento e alinhamento das células. */
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Faz os labels dos formulários ocuparem uma linha. */
+form label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+/* Estilo dos campos do formulário. */
+form input, form select, form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    /* Faz padding e borda entrarem no cálculo da largura. */
+    box-sizing: border-box;
+}
+
+/* Estilo dos botões. */
+button {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background-color: #d84315;
+    color: white;
+    border: none;
+    /* Mostra a mão do mouse ao passar sobre o botão. */
+    cursor: pointer;
+}
+
+/* Estilo do rodapé. */
+footer {
+    text-align: center;
+    padding: 16px;
+    color: #777;
+}
+
+/* ===== Logo da Gisburguer ===== */
+
+/* Logo usada no topo das páginas. */
+.logo {
+    /* Evita espaço extra embaixo da imagem. */
+    display: block;
+    /* Faz a logo diminuir em telas pequenas. */
+    max-width: 100%;
+    height: auto;
+}
+
+/* Logo dentro do cabeçalho laranja. */
+header .logo {
+    /* Define a altura da logo no cabeçalho. */
+    height: 64px;
+    width: auto;
+}
+
+/* Cabeçalho do cardápio com a logo e o link lado a lado. */
+.header-cardapio {
+    /* Coloca a logo e o link na mesma linha. */
+    display: flex;
+    /* Alinha os itens verticalmente ao centro. */
+    align-items: center;
+    /* Empurra o link para o lado direito. */
+    justify-content: space-between;
+    /* Permite quebrar linha em telas pequenas. */
+    flex-wrap: wrap;
+    /* Espaço entre a logo e o link. */
+    gap: 12px;
+}
+
+/* Link do cabeçalho do cardápio. */
+.header-cardapio a {
+    color: white;
+    font-weight: bold;
+}
+
+/* Logo no topo das páginas administrativas. */
+.logo-topo {
+    /* Centraliza a logo na página. */
+    margin: 24px auto 8px;
+    /* Define a altura da logo. */
+    height: 80px;
+    width: auto;
+}
+
+/* ===== Páginas de login e cadastro ===== */
+
+/* Centraliza o card de login no meio da tela. */
+body.pagina-login {
+    /* Usa flexbox para centralizar o conteúdo. */
+    display: flex;
+    /* Centraliza na horizontal. */
+    justify-content: center;
+    /* Centraliza na vertical. */
+    align-items: center;
+    /* Ocupa a altura inteira da tela. */
+    min-height: 100vh;
+    /* Espaço para o card não colar nas bordas no celular. */
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+/* Caixa branca que guarda a logo e o formulário. */
+.login-card {
+    /* Fundo branco. */
+    background: white;
+    /* Largura total, mas limitada a 380px. */
+    width: 100%;
+    max-width: 380px;
+    /* Espaço interno. */
+    padding: 32px 28px;
+    /* Cantos arredondados. */
+    border-radius: 12px;
+    /* Sombra suave. */
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    /* Centraliza os textos. */
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Logo no topo do card de login. */
+.login-card .logo {
+    /* Centraliza a logo e deixa espaço embaixo. */
+    margin: 0 auto 20px;
+    /* Limita o tamanho da logo. */
+    width: 100%;
+    max-width: 260px;
+}
+
+/* Título do card (Login / Criar Conta). */
+.login-card h2 {
+    margin: 0 0 16px;
+    color: #3b1f10;
+}
+
+/* Os campos continuam alinhados à esquerda dentro do card. */
+.login-card form {
+    text-align: left;
+}
+
+/* Campos de texto do login com borda mais bonita. */
+.login-card form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Destaque no campo selecionado. */
+.login-card form input:focus {
+    outline: none;
+    border-color: #d84315;
+}
+
+/* Botão ocupa toda a largura do card. */
+.login-card button {
+    width: 100%;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Mensagem de erro do login. */
+.login-card .erro {
+    color: #b71c1c;
+    background: #fdecea;
+    padding: 8px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+}
+
+/* Links do card ficam na cor do site. */
+.login-card a {
+    color: #d84315;
+}
