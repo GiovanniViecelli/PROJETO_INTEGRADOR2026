@@ -93,136 +93,106 @@ hamburgueria-gisburguer/
 
 ---
 
-## 🚀 Passo a passo para instalar (para quem adquiriu o sistema)
+## 🚀 Como fazer o deploy no servidor
 
-### 1. O que você precisa ter
+Este passo a passo explica como baixar o projeto do GitHub e colocá-lo no servidor Linux do professor.
 
-| Item | Para que serve |
-|------|----------------|
-| Um servidor **Linux** (Ubuntu/Debian recomendado) com acesso SSH | Onde o site vai ficar |
-| **MobaXterm** instalado no seu computador Windows ([download](https://mobaxterm.mobatek.net/download.html)) | Conectar no servidor e enviar os arquivos |
-| IP, usuário e senha do servidor | Para a conexão SSH |
-| Servidor web **Nginx** | Entregar as páginas |
-| **PHP 7.4+ (PHP-FPM)** com as extensões `pgsql` e `pdo_pgsql` | Executar o sistema |
-| **PostgreSQL** | Banco de dados |
+### 1. Pegar o projeto no GitHub
 
-### 2. Conectar ao servidor pelo MobaXterm
+1. Abra o repositório do projeto no GitHub.
+2. Clique em **Code** e copie a URL da opção **HTTPS**.
+3. Abra o MobaXterm e conecte ao servidor em **Session → SSH**, usando o IP e o usuário fornecidos pelo professor/administrador.
 
-1. Abra o MobaXterm e clique em **Session → SSH**.
-2. Em **Remote host**, digite o IP do servidor. Marque **Specify username** e informe o usuário (ex.: `root` ou `ubuntu`). A porta padrão é `22`.
-3. Clique em **OK** e digite a senha. Pronto: você está no terminal do servidor.
-4. Ao conectar, o MobaXterm abre à esquerda um **navegador de arquivos SFTP**. Você vai usá-lo para enviar o projeto.
+### 2. Instalar os programas necessários
 
-### 3. Instalar Nginx, PHP e PostgreSQL
-
-No terminal do MobaXterm (Ubuntu/Debian):
+No terminal do servidor (Ubuntu/Debian), execute:
 
 ```bash
 sudo apt update
-sudo apt install -y nginx php-fpm php-pgsql postgresql postgresql-contrib unzip
+sudo apt install -y git nginx postgresql php-fpm php-pgsql
 ```
 
-Confira se o PHP enxerga o driver do PostgreSQL (deve aparecer `pdo_pgsql`):
+### 3. Baixar o projeto
+
+Troque `URL_DO_REPOSITORIO` pela URL copiada no GitHub:
 
 ```bash
-php -m | grep pgsql
+cd /var/www
+sudo git clone URL_DO_REPOSITORIO gisburguer
+sudo chown -R www-data:www-data /var/www/gisburguer
 ```
 
-### 4. Criar o banco de dados
+### 4. Criar e preencher o banco de dados
+
+Crie o usuário e o banco. Troque `SUA_SENHA` por uma senha escolhida para o servidor:
 
 ```bash
 sudo -u postgres psql
 ```
 
-Dentro do `psql`, execute (troque a senha por uma sua):
+No prompt do PostgreSQL, execute:
 
 ```sql
-CREATE USER hamburgueria WITH PASSWORD 'hamburgueria';
+CREATE USER hamburgueria WITH PASSWORD 'SUA_SENHA';
 CREATE DATABASE hamburgueria OWNER hamburgueria;
 \q
 ```
 
-### 5. Enviar o projeto para o servidor
-
-**Pelo MobaXterm (arrastar e soltar):**
-1. No painel SFTP da esquerda, navegue até `/var/www/`.
-2. Arraste a pasta `hamburgueria-gisburguer` (ou o `.zip`) do seu computador para lá.
-3. Se enviou o `.zip`, extraia no terminal:
-   ```bash
-   cd /var/www
-   sudo unzip hamburgueria-gisburguer.zip
-   ```
-
-**Ou pelo GitHub (direto no servidor):**
-```bash
-cd /var/www
-sudo apt install -y git
-sudo git clone https://github.com/SEU-USUARIO/hamburgueria-gisburguer.git
-```
-
-### 6. Criar as tabelas
+Importe as tabelas e os dados que acompanham o projeto:
 
 ```bash
-cd /var/www/hamburgueria-gisburguer
-PGPASSWORD=hamburgueria psql -h localhost -U hamburgueria -d hamburgueria -f database/schema.sql
+sudo -u postgres psql -d hamburgueria -f /var/www/gisburguer/database/backup_hamburgueria.sql
 ```
 
-### 7. Configurar a conexão com o banco
+### 5. Configurar a conexão do site
 
-Edite o arquivo `database/connect.php` (pelo terminal com `nano`, ou clicando duas vezes no arquivo no painel SFTP do MobaXterm):
+Abra o arquivo de conexão:
 
 ```bash
-sudo nano /var/www/hamburgueria-gisburguer/database/connect.php
+sudo nano /var/www/gisburguer/database/connect.php
 ```
 
-Ajuste as quatro variáveis no topo:
+Confira se as configurações estão de acordo com o banco criado:
 
 ```php
-$host   = "localhost";        // IP do PostgreSQL (localhost se estiver no mesmo servidor)
+$host = "localhost";
 $dbname = "hamburgueria";
-$user   = "hamburgueria";
-$pass   = "hamburgueria";     // a senha que você definiu no passo 4
+$user = "hamburgueria";
+$pass = "SUA_SENHA";
 ```
 
-Salve no nano com `Ctrl+O`, `Enter` e saia com `Ctrl+X`.
+A senha deve ser a mesma usada no passo anterior. Salve com `Ctrl+O`, `Enter` e saia com `Ctrl+X`.
 
-### 8. Dar permissão para salvar fotos
-
-O usuário do PHP-FPM (`www-data`) precisa poder gravar na pasta de imagens:
+### 6. Permitir o envio de fotos
 
 ```bash
-cd /var/www/hamburgueria-gisburguer
-sudo mkdir -p uploads/lanches
-sudo chown -R www-data:www-data uploads
-sudo chmod -R 775 uploads
+sudo mkdir -p /var/www/gisburguer/uploads/lanches
+sudo chown -R www-data:www-data /var/www/gisburguer/uploads
+sudo chmod -R 775 /var/www/gisburguer/uploads
 ```
 
-### 9. Configurar o Nginx e abrir o site
+### 7. Configurar o Nginx
 
-Descubra a versão do PHP instalada (ex.: `8.1`, `8.3`), pois ela aparece no nome do socket do PHP-FPM:
+Veja qual socket do PHP está instalado:
 
 ```bash
-php -v
 ls /run/php/
 ```
 
-Crie o arquivo de configuração do site:
+Crie a configuração do site:
 
 ```bash
 sudo nano /etc/nginx/sites-available/gisburguer
 ```
 
-Cole o conteúdo abaixo (troque `8.3` pela sua versão do PHP):
+Cole o conteúdo abaixo. Se o arquivo em `/run/php/` tiver outro nome, ajuste `php8.3-fpm.sock` para o nome correto.
 
 ```nginx
 server {
     listen 80;
     server_name _;
-
-    root /var/www/hamburgueria-gisburguer;
+    root /var/www/gisburguer;
     index index.php;
-
-    # Limite de upload das fotos (padrão do Nginx é 1 MB)
     client_max_body_size 10M;
 
     location / {
@@ -234,40 +204,29 @@ server {
         fastcgi_pass unix:/run/php/php8.3-fpm.sock;
     }
 
-    # Bloqueia arquivos ocultos (ex.: .git)
     location ~ /\. {
         deny all;
     }
 }
 ```
 
-Ative o site, aumente o limite de upload do PHP e reinicie os serviços:
+Ative o site e reinicie os serviços (ajuste `php8.3-fpm` para a versão instalada):
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/gisburguer /etc/nginx/sites-enabled/
-sudo rm -f /etc/nginx/sites-enabled/default
-sudo sed -i 's/^upload_max_filesize.*/upload_max_filesize = 10M/; s/^post_max_size.*/post_max_size = 12M/' /etc/php/8.3/fpm/php.ini
+sudo ln -s /etc/nginx/sites-available/gisburguer /etc/nginx/sites-enabled/gisburguer
 sudo nginx -t
+sudo systemctl enable --now postgresql nginx
 sudo systemctl restart php8.3-fpm
-sudo systemctl restart nginx
+sudo systemctl reload nginx
 ```
 
-(Troque `8.3` pela sua versão do PHP nos comandos acima.) O comando `sudo nginx -t` deve mostrar `syntax is ok`.
+### 8. Abrir o site
 
-| Página | Endereço |
-|--------|----------|
-| Entrada / login | `http://IP-DO-SERVIDOR/` |
-| Cardápio do cliente | `http://IP-DO-SERVIDOR/cardapio-publico.php` |
+No navegador, acesse `http://IP-DO-SERVIDOR/`, substituindo pelo IP do servidor. O cardápio público fica em `http://IP-DO-SERVIDOR/cardapio-publico.php`.
 
-> 💡 O sistema também funciona dentro de uma subpasta, pois os links são ajustados automaticamente pelo `config.php`.
+Na primeira visita, use **Cadastre-se** na tela de login para criar a conta de administrador.
 
-### 10. Primeiro acesso
-
-1. Abra a página de login e clique em **Cadastre-se**.
-2. Crie a conta do administrador (e-mail e senha) e volte para o login.
-3. Entre e cadastre seus lanches em **+ Novo lanche** (com foto).
-4. Divulgue o link `.../cardapio-publico.php` para os clientes.
-5. Registre e acompanhe os pedidos em **Pedidos**.
+> **Importante:** não use a senha de exemplo em um servidor real. Não publique senhas no GitHub.
 
 ---
 
