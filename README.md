@@ -1,5 +1,5 @@
 
-# 🍔 Gisburguer – Sistema para Hamburgueria
+# 🍔 Giseleburguer – Sistema para Hamburgueria
 
 Sistema web em **PHP + PostgreSQL** para uma hamburgueria. Ele tem duas partes:
 
