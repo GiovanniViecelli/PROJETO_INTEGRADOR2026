@@ -114,11 +114,11 @@ sudo apt install -y git nginx postgresql php-fpm php-pgsql
 
 ### 3. Baixar o projeto
 
-Troque `URL_DO_REPOSITORIO` pela URL copiada no GitHub:
+URL copiada no GitHub:
 
 ```bash
 cd /var/www
-sudo git clone URL_DO_REPOSITORIO gisburguer
+sudo git clone https://github.com/GiovanniViecelli/hamburgueria-gisburguer gisburguer
 sudo chown -R www-data:www-data /var/www/gisburguer
 ```
 
@@ -226,19 +226,6 @@ No navegador, acesse `http://IP-DO-SERVIDOR/`, substituindo pelo IP do servidor.
 
 Na primeira visita, use **Cadastre-se** na tela de login para criar a conta de administrador.
 
-> **Importante:** não use a senha de exemplo em um servidor real. Não publique senhas no GitHub.
-
----
-
-## 🧪 Testar no seu computador
-
-Com PHP e PostgreSQL instalados, dentro da pasta do projeto:
-
-```bash
-php -S localhost:8000
-```
-
-Acesse `http://localhost:8000`.
 
 ---
 
